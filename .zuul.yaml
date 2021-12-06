@@ -1,0 +1,13 @@
+- job:
+    name: dstat_graph-generate-graph
+    description: |
+        Test dstat_graph generation
+    run: playbooks/test.yaml
+
+- project:
+    check:
+      jobs:
+        - dstat_graph-generate-graph
+    gate:
+      jobs:
+        - dstat_graph-generate-graph

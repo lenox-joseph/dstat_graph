@@ -1,0 +1,24 @@
+- hosts: all
+  tasks:
+
+    - name: Run build
+      shell: |
+        ./generate_page.sh sample.csv > dstat_graph.html
+      args:
+        chdir: '{{ ansible_user_dir }}/{{ zuul.project.src_dir }}'
+
+    - name: Copy to executor
+      synchronize:
+        src: '{{ ansible_user_dir }}/{{ zuul.project.src_dir }}/dstat_graph.html'
+        dest: '{{ zuul.executor.log_root }}'
+        mode: pull
+
+    - name: Return artifact to Zuul
+      zuul_return:
+        data:
+          zuul:
+            artifacts:
+              - name: 'Sample dstat graphs'
+                url: 'dstat_graph.html'
+                metadata:
+                  type: text/html
